@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            background: #20262E;
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    
+        #flashcard {
+            background: #fff;
+            border-radius: 4px;
+            padding: 20px;
+            font-size: 25px;
+            text-align: center;
+            transition: all 0.2s;
+            margin: 0 auto;
+            width: 800px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        button {
+            background: #0084ff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 14px;
+            font-size: 15px;
+            color: #fff;
+            margin-top: 20px;
+            align-self: center;
+            transition: background 0.2s ease-in-out;
+        }
+    
+        button:hover {
+            background-color: #006bbf;
+            cursor: pointer;
+        }
+    
+        @media (max-width: 600px) {
+            #flashcard {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div x-data="flashcardApp()" x-init="loadServices">
+        <div id="flashcard">
+        <div x-show="currentService">
+            <h2 x-text="currentService.name"></h2>
+            <p x-text="currentService.description"></p>
+        </div>
+        <button @click="showRandomService()">Show Another Service</button>
+    </div>
+
+    <script>
+        function flashcardApp() {
+            return {
+                services: [],
+                currentService: null,
+                loadServices() {
+                    fetch('https://gist.githubusercontent.com/VitalijusKiubis/e4099e392303f0ad8637803d5dd16ba1/raw/e53f179938e2fc9bce60f7cd459fc5d2b43959a8/services.md')
+                        .then(response => response.text())
+                        .then(data => {
+                            const lines = data.split('\n').filter(line => line.startsWith('- **'));
+                            this.services = lines.map((line, index) => {
+                                const parts = line.split('**:');
+                                const name = parts[0].replace('- **', '').trim();
+                                const description = parts[1] ? parts[1].trim() : 'No description available';
+                                return { id: index, name: name, description: description };
+                            });
+                            this.showRandomService();
+                        })
+                        .catch(error => {
+                            console.error('Error loading services:', error);
+                        });
+                },
+                showRandomService() {
+                    if (this.services.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * this.services.length);
+                        this.currentService = this.services[randomIndex];
+                    }
+                }
+            };
+        }
+    </script>
+
+</body>
+</html>
