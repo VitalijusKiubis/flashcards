@@ -69,7 +69,7 @@
                 services: [],
                 currentService: null,
                 loadServices() {
-                    fetch('https://gist.githubusercontent.com/VitalijusKiubis/e4099e392303f0ad8637803d5dd16ba1/raw/e53f179938e2fc9bce60f7cd459fc5d2b43959a8/services.md')
+                    fetch('https://gist.githubusercontent.com/VitalijusKiubis/e4099e392303f0ad8637803d5dd16ba1/raw/842ec3d9bb41563c579a16571a9e34174f1302a6/services.md')
                         .then(response => response.text())
                         .then(data => {
                             const lines = data.split('\n').filter(line => line.startsWith('- **'));
